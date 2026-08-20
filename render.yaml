@@ -3,12 +3,14 @@ services:
     name: causalrail-api
     runtime: node
     rootDir: server
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
         value: "22"
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
       - key: DATABASE_URL
         sync: false
       - key: GITHUB_WEBHOOK_SECRET
