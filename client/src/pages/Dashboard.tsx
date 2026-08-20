@@ -23,7 +23,9 @@ export function Dashboard() {
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
       <header>
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-subtle">Demo rail</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-subtle">
+          {data.live ? "Live rail · Supabase" : "Demo rail · API offline"}
+        </p>
         <h1 className="mt-1 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
           Failure attribution
         </h1>

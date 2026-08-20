@@ -39,6 +39,7 @@ export type FailureAnalysis = {
 
 export type DashboardPayload = {
   workspace: "demo" | "personal";
+  live?: boolean;
   kpis: {
     openFailures: number;
     flakySignatures: number;
