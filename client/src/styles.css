@@ -1,0 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "Barlow", ui-sans-serif, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --color-bg: #0c0c0b;
+  --color-surface: #151514;
+  --color-raised: #1c1c1a;
+  --color-inset: #10100f;
+  --color-fg: #ece8e0;
+  --color-muted: #8a867c;
+  --color-subtle: #5c5952;
+  --color-accent: #d6d0c4;
+  --color-accent-fg: #0c0c0b;
+  --color-signal: #c45c4a;
+  --color-ok: #6f8f72;
+  --color-warn: #b8924a;
+  --color-border: color-mix(in oklab, var(--color-fg) 12%, transparent);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    background: var(--color-bg);
+    color: var(--color-fg);
+  }
+  body {
+    min-height: 100dvh;
+    font-family: var(--font-sans);
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

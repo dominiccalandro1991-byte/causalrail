@@ -1,0 +1,26 @@
+{
+  "name": "causalrail-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "tsx --test src/engine/normalizer.test.ts src/engine/fingerprint.test.ts"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.16.5",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.19.4",
+    "typescript": "^5.7.0"
+  }
+}
