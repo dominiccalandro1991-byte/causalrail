@@ -5,6 +5,7 @@ import { pingDb, dbConfigured, dbLastError } from "./db.js";
 import { githubHmac } from "./middleware/hmac.js";
 import { handleGitHubWebhook } from "./routes/webhooks.js";
 import { apiRouter } from "./routes/api.js";
+import { runBootPreflight } from "./scopeshield.js";
 
 const app = express();
 
@@ -66,6 +67,8 @@ app.use(
 process.on("unhandledRejection", (reason) => {
   console.error("unhandledRejection", reason);
 });
+
+runBootPreflight();
 
 app.listen(config.port, "0.0.0.0", () => {
   console.log(`CausalRail API listening on ${config.port}`);
