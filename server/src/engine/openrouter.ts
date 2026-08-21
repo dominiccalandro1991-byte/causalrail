@@ -12,14 +12,24 @@ const SYSTEM = `You attribute CI failures. Reply with JSON only:
 No markdown.`;
 
 export async function parseLogWithOpenRouter(rawLog: string): Promise<LlmParseResult | null> {
-  if (!config.openRouterKey) return null;
+  const harbor = (process.env.KEYHARBOR_URL ?? "").replace(/\/$/, "");
+  const harborToken = (process.env.KEYHARBOR_TOKEN ?? "").trim();
+  const useHarbor = harbor.startsWith("https://") && !!harborToken && !/postgres|supabase\.com/i.test(harbor);
 
-  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  if (!useHarbor && !config.openRouterKey) return null;
+
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  let url = "https://openrouter.ai/api/v1/chat/completions";
+  if (useHarbor) {
+    url = `${harbor}/v1/chat/completions`;
+    headers.Authorization = `Bearer ${harborToken}`;
+  } else {
+    headers.Authorization = `Bearer ${config.openRouterKey}`;
+  }
+
+  const res = await fetch(url, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${config.openRouterKey}`,
-      "Content-Type": "application/json",
-    },
+    headers,
     body: JSON.stringify({
       model: config.openRouterModel,
       temperature: 0,
