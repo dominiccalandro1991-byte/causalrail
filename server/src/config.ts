@@ -7,4 +7,5 @@ export const config = {
   openRouterModel: process.env.OPENROUTER_MODEL ?? "openai/gpt-4o-mini",
   clientOrigin: process.env.CLIENT_ORIGIN ?? "*",
   webhookUser: process.env.CAUSALRAIL_WEBHOOK_USER ?? "demo",
+  incidentDojoUrl: process.env.INCIDENTDOJO_URL ?? "https://nano-sandbox-api.onrender.com",
 };

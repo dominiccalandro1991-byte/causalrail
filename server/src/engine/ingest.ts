@@ -1,6 +1,7 @@
 import { query } from "../db.js";
 import { normalizeStackTrace } from "./normalizer.js";
 import { parseLogWithOpenRouter } from "./openrouter.js";
+import { ingestFailure as incidentDojoIngest, queryHistoricalPatch } from "./incidentdojo.js";
 import type { FailureCategory } from "./types.js";
 
 export async function ingestRawLog(opts: {
@@ -13,10 +14,24 @@ export async function ingestRawLog(opts: {
   rawLog: string;
   githubRunId?: number;
   rerunOf?: string | null;
-}): Promise<{ runId: string; fingerprint: string; category: FailureCategory; llmUsed: boolean }> {
+}): Promise<{
+  runId: string;
+  fingerprint: string;
+  category: FailureCategory;
+  llmUsed: boolean;
+  incidentDojoHit?: boolean;
+  suggestedPatch?: string | null;
+}> {
   let result = normalizeStackTrace(opts.rawLog);
   let llmUsed = false;
-  if (result.needsLlm) {
+  let incidentDojoHit = false;
+  let suggestedPatch: string | null = null;
+  const recalled = await queryHistoricalPatch(opts.rawLog);
+  if (recalled?.hit && recalled.patch_diff) {
+    incidentDojoHit = true;
+    suggestedPatch = recalled.patch_diff;
+  }
+  if (result.needsLlm && !incidentDojoHit) {
     const llm = await parseLogWithOpenRouter(opts.rawLog);
     if (llm) {
       llmUsed = true;
@@ -76,5 +91,20 @@ export async function ingestRawLog(opts: {
     );
   }
 
-  return { runId, fingerprint: result.fingerprint, category: result.category, llmUsed };
+  void incidentDojoIngest({
+    runId,
+    fingerprint: result.fingerprint,
+    rawLog: opts.rawLog,
+    repo: opts.repo,
+    workflow: opts.workflow,
+  });
+
+  return {
+    runId,
+    fingerprint: result.fingerprint,
+    category: result.category,
+    llmUsed,
+    incidentDojoHit,
+    suggestedPatch,
+  };
 }
